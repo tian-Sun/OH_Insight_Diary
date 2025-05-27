@@ -135,7 +135,7 @@ body {
 }
 
 .date-display {
-  @apply text-4xl font-semibold text-amber-800 tracking-wide;
+  @apply text-2xl font-semibold text-amber-800 tracking-wide;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
