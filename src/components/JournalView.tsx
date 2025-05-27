@@ -13,9 +13,9 @@ const JournalView: React.FC<JournalViewProps> = ({ type, cards, onSave }) => {
   
   const getPrompt = () => {
     if (type === 'morning') {
-      return '请根据今日抽到的卡片，写下你的晨间觉察...';
+      return '今日抽到的卡片让你联想到什么，你觉得哪个和你最有关联，选一个最强烈的感受来记录~';
     } else {
-      return '回顾今天，结合卡片写下你的夜间复盘...';
+      return '今天的生活，和这组牌有什么关联吗？';
     }
   };
   
