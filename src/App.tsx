@@ -169,8 +169,11 @@ function App() {
 
   function handleShare() {
     if (!contentRef.current) return;
+    const watermark = document.getElementById('share-watermark');
+    if (watermark) (watermark as HTMLImageElement).style.display = 'block';
     import('html2canvas').then(({ default: html2canvas }) => {
       html2canvas(contentRef.current!, { backgroundColor: '#fdf6e3' }).then(canvas => {
+        if (watermark) (watermark as HTMLImageElement).style.display = 'none';
         const link = document.createElement('a');
         link.download = `${formattedDate}-觉察回顾.png`;
         link.href = canvas.toDataURL('image/png');
@@ -212,6 +215,13 @@ function App() {
           <footer className="p-4 text-center text-sm text-gray-600 w-full">
             © 2025 快乐的大人 | OH卡觉察日记
           </footer>
+          <img
+            id="share-watermark"
+            src="/assets/sharecode.png"
+            alt="水印"
+            style={{ display: 'none', maxWidth: 160 }}
+            className="mx-auto my-2"
+          />
         </div>
         {view === 'merged' && todayEntry?.morningNote && todayEntry?.eveningNote && (
           <button
