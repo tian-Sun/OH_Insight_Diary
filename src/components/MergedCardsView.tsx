@@ -128,7 +128,7 @@ const MergedCardsView: React.FC<MergedCardsViewProps> = ({
           </button>
         ) : (
           <div className="journal-paper p-4 rounded min-h-24 flex items-center justify-center">
-            <span className="text-gray-400">18:00 后开放夜间复盘...</span>
+            <span className="text-gray-400">请到真实世界里自由的体验生活</span>
           </div>
         )}
       </motion.div>
