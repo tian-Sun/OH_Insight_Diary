@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
-import { Calendar as CalendarIcon, Music, VolumeX } from 'lucide-react';
+import { Calendar as CalendarIcon, Music, VolumeX, Share2 } from 'lucide-react';
 import JournalView from './components/JournalView';
 import CardDrawView from './components/CardDrawView';
 import Calendar from './components/Calendar';
@@ -38,6 +38,7 @@ function App() {
   const { playing, togglePlay } = useAudio('/background.mp3');
   
   const [view, setView] = useState('draw');
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Reset everything at midnight
@@ -106,7 +107,7 @@ function App() {
     setShowCalendar(false);
   };
   
-  const renderCurrentView = () => {
+  const renderCurrentView = (ref: React.RefObject<HTMLDivElement>) => {
     console.log('App renderCurrentView:', { view, cardState, todayEntry });
     switch (view) {
       case 'draw':
@@ -160,11 +161,23 @@ function App() {
             eveningNote={todayEntry?.eveningNote}
             canEditEvening={canEditEvening}
             onEveningClick={() => setView('eveningJournal')}
+            contentRef={contentRef}
           />
         );
     }
   };
 
+  function handleShare() {
+    if (!contentRef.current) return;
+    import('html2canvas').then(({ default: html2canvas }) => {
+      html2canvas(contentRef.current!, { backgroundColor: '#fdf6e3' }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `${formattedDate}-觉察回顾.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    });
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -194,15 +207,22 @@ function App() {
             <Calendar onSelect={handleCalendarSelect} />
           </div>
         )}
-        
-        <div className="max-w-lg w-full mx-auto">
-          {renderCurrentView()}
+        <div ref={contentRef} className="max-w-lg w-full mx-auto flex flex-col items-center">
+          {renderCurrentView(contentRef)}
+          <footer className="p-4 text-center text-sm text-gray-600 w-full">
+            © 2025 快乐的大人 | OH卡觉察日记
+          </footer>
         </div>
+        {view === 'merged' && todayEntry?.morningNote && todayEntry?.eveningNote && (
+          <button
+            onClick={handleShare}
+            className="flex items-center px-6 py-3 bg-teal-500 text-white rounded-lg shadow hover:bg-teal-600 transition-colors mx-auto mt-2"
+          >
+            <Share2 size={18} className="mr-2" />
+            分享今日觉察
+          </button>
+        )}
       </main>
-
-      <footer className="p-4 text-center text-sm text-gray-600">
-        © 2025 快乐的大人 | OH卡觉察日记
-      </footer>
     </div>
   );
 }

@@ -24,7 +24,7 @@ export const useJournal = () => {
   // Determine if evening journal can be edited (after 6pm)
   const canEditEvening = () => {
     const now = new Date();
-    return now.getHours() >= 18;
+    return now.getHours() >= 15;
   };
   
   // Save morning note
