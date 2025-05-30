@@ -6,9 +6,10 @@ import { useJournal } from '../hooks/useJournal';
 
 interface CalendarProps {
   onSelect: (date: Date) => void;
+  value?: Date;
 }
 
-const Calendar: React.FC<CalendarProps> = ({ onSelect }) => {
+const Calendar: React.FC<CalendarProps> = ({ onSelect, value }) => {
   const { hasEntry } = useJournal();
   
   const tileClassName = ({ date, view }: { date: Date; view: string }) => {
@@ -24,6 +25,7 @@ const Calendar: React.FC<CalendarProps> = ({ onSelect }) => {
       <ReactCalendar 
         onClickDay={onSelect}
         tileClassName={tileClassName}
+        value={value}
       />
     </div>
   );

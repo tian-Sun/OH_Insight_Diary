@@ -38,7 +38,10 @@ function App() {
   const { playing, togglePlay } = useAudio('/background.mp3');
   
   const [view, setView] = useState('draw');
+  const [selectedEntry, setSelectedEntry] = useState<any>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [calendarDate, setCalendarDate] = useState<Date>(currentDate);
 
   useEffect(() => {
     // Reset everything at midnight
@@ -99,10 +102,13 @@ function App() {
   }, []);
   
   const handleCalendarSelect = (date: Date) => {
-    const entry = getEntryByDate(format(date, 'yyyy-MM-dd'));
+    setCalendarDate(date);
+    const dateStr = format(date, 'yyyy-MM-dd');
+    const entry = getEntryByDate(dateStr);
     if (entry) {
-      // View historical entry
-      // Implementation could be added here
+      setSelectedEntry(entry);
+      setSelectedDate(format(date, 'yyyy年MM月dd日', { locale: zhCN }));
+      setView('historyReview');
     }
     setShowCalendar(false);
   };
@@ -152,7 +158,6 @@ function App() {
           />
         );
       case 'merged':
-      default:
         return (
           <DayReviewView
             date={formattedDate}
@@ -164,6 +169,23 @@ function App() {
             contentRef={contentRef}
           />
         );
+      case 'historyReview':
+        if (selectedEntry && selectedDate) {
+          return (
+            <DayReviewView
+              date={selectedDate}
+              cards={selectedEntry.cards || []}
+              morningNote={selectedEntry.morningNote || ''}
+              eveningNote={selectedEntry.eveningNote}
+              canEditEvening={false}
+              onEveningClick={() => {}}
+              contentRef={ref}
+            />
+          );
+        }
+        return null;
+      default:
+        return null;
     }
   };
 
@@ -207,7 +229,7 @@ function App() {
       <main className="flex-1 flex flex-col items-center justify-center p-4 relative">
         {showCalendar && (
           <div className="absolute top-0 right-0 mt-16 mr-4 z-10">
-            <Calendar onSelect={handleCalendarSelect} />
+            <Calendar onSelect={handleCalendarSelect} value={calendarDate} />
           </div>
         )}
         <div ref={contentRef} className="max-w-lg w-full mx-auto flex flex-col items-center">
